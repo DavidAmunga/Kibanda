@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "707964752641",
+    "firebase_url": "https://kibanda-66e2c.firebaseio.com",
+    "project_id": "kibanda-66e2c",
+    "storage_bucket": "kibanda-66e2c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707964752641:android:8abbd3e317a32308",
+        "android_client_info": {
+          "package_name": "com.labs.tatu.kibanda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707964752641-u2bmvudenth8thuid3vu96ff2ejj9u6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labs.tatu.kibanda",
+            "certificate_hash": "ce92d7a69dc99a9796ec5571cc878ce02e1bffcd"
+          }
+        },
+        {
+          "client_id": "707964752641-fq15sugi7124f9d8dt2j6g4b3fdi7sm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUi5vNWGB5SHVlUEIy222m-ipeIQ-XFsI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707964752641-fq15sugi7124f9d8dt2j6g4b3fdi7sm8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
