@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                             //Get User Information
                             mDialog.dismiss();
                             User user = dataSnapshot.child(edtPhone.getText().toString()).getValue(User.class);
+                            user.setPhone(edtPhone.getText().toString());
                             if (user.getPassword().equals(edtPassword.getText().toString())) {
                                 Intent homeIntent = new Intent(LoginActivity.this, Home.class);
 //                                Create Variable to save current user
