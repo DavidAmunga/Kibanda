@@ -3,6 +3,8 @@
     package="com.labs.tatu.kibanda">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -27,7 +29,11 @@
         <activity android:name=".FoodList" />
         <activity android:name=".FoodDetail" />
         <activity android:name=".Cart" />
-        <activity android:name=".OrderStatus"></activity>
+        <activity android:name=".OrderStatus" />
+        <activity
+            android:name=".admin.HomeAdmin"
+            android:label="@string/title_activity_home_admin"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
