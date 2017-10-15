@@ -171,6 +171,7 @@ public class HomeAdmin extends AppCompatActivity
                 if (newCategory != null) {
                     mDatabase.push().setValue(newCategory);
                 }
+                Toast.makeText(HomeAdmin.this, "Category Added!", Toast.LENGTH_SHORT).show();
             }
         });
         alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -309,7 +310,7 @@ public class HomeAdmin extends AppCompatActivity
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
 //                        Get Category Id and Send to next activity
-                        Intent foodList = new Intent(HomeAdmin.this, FoodList.class);
+                        Intent foodList = new Intent(HomeAdmin.this, FoodListAdmin.class);
                         foodList.putExtra("CategoryId", adapter.getRef(position).getKey());
                         startActivity(foodList);
                     }
