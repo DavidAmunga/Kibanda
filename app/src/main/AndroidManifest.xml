@@ -33,7 +33,12 @@
             android:name=".admin.HomeAdmin"
             android:label="@string/title_activity_home_admin"
             android:theme="@style/AppTheme" />
-        <activity android:name=".admin.FoodListAdmin"></activity>
+        <activity android:name=".admin.FoodListAdmin" />
+
+        <service
+            android:name=".service.ListenOrder"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
