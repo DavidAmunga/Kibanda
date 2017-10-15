@@ -236,7 +236,6 @@ public class HomeAdmin extends AppCompatActivity
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             dialog.dismiss();
-
                             item.setImage(saveUri.toString());
                         }
                     }).

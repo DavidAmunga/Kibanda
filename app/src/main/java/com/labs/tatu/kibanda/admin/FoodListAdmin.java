@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -36,6 +38,7 @@ import com.labs.tatu.kibanda.FoodList;
 import com.labs.tatu.kibanda.Interface.ItemClickListener;
 import com.labs.tatu.kibanda.R;
 import com.labs.tatu.kibanda.ViewHolder.FoodViewHolder;
+import com.labs.tatu.kibanda.common.Common;
 import com.labs.tatu.kibanda.model.Category;
 import com.labs.tatu.kibanda.model.Food;
 import com.mancj.materialsearchbar.MaterialSearchBar;
@@ -332,6 +335,129 @@ public class FoodListAdmin extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle().equals(Common.UPDATE)) {
+            showUpdateFoodDialog(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
+        } else if (item.getTitle().equals(Common.DELETE)) {
+            deleteFood(adapter.getRef(item.getOrder()).getKey());
+
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    private void deleteFood(String key) {
+        mDatabase.child(key).removeValue();
+    }
+
+    private void showUpdateFoodDialog(final String key, final Food item) {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(FoodListAdmin.this);
+        alertDialog.setTitle("Update Food");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View add_menu_layout = inflater.inflate(R.layout.add_new_food_layout, null);
+
+        edtFoodName = (MaterialEditText) add_menu_layout.findViewById(R.id.edtFoodName);
+        edtDiscount = (MaterialEditText) add_menu_layout.findViewById(R.id.edtDiscount);
+        edtPrice = (MaterialEditText) add_menu_layout.findViewById(R.id.edtPrice);
+        edtDescription = (MaterialEditText) add_menu_layout.findViewById(R.id.edtDescription);
+        btnSelect = (FButton) add_menu_layout.findViewById(R.id.btnSelect);
+        btnUpload = (FButton) add_menu_layout.findViewById(R.id.btnUpload);
+
+
+        edtFoodName.setText(item.getName());
+        edtDescription.setText(item.getDescription());
+        edtPrice.setText(item.getPrice());
+        edtDiscount.setText(item.getDiscount());
+
+
+        btnUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                changeImage(item);
+
+
+            }
+        });
+
+        btnSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseImage();
+
+            }
+        });
+
+        alertDialog.setView(add_menu_layout);
+        alertDialog.setIcon(R.drawable.ic_playlist_add_black_24dp);
+
+//        Set Button
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+
+                //Update New Information
+                item.setName(edtFoodName.getText().toString());
+                item.setPrice(edtPrice.getText().toString());
+                item.setDiscount(edtDiscount.getText().toString());
+                item.setDescription(edtDescription.getText().toString());
+
+                mDatabase.child(key).setValue(item);
+                Snackbar.make(rootLayout, "Food: " + item.getName() + " added", Snackbar.LENGTH_SHORT);
+
+
+            }
+        });
+        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+
+            }
+        });
+        alertDialog.show();
+
+    }
+
+    private void changeImage(final Food item) {
+        if (saveUri != null) {
+            final ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setMessage("Uploading.....");
+            dialog.show();
+            String imageName = UUID.randomUUID().toString();
+            final StorageReference imageFolder = mStorage.child("images/" + imageName);
+            imageFolder.putFile(saveUri).
+                    addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            dialog.dismiss();
+
+                            item.setImage(saveUri.toString());
+                        }
+                    }).
+                    addOnFailureListener(new OnFailureListener() {
+
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog.dismiss();
+                            Toast.makeText(FoodListAdmin.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            dialog.setMessage("Uploaded " + progress + "%");
+                        }
+                    });
+        }
     }
 
     private void loadListFood(String categoryId) {
