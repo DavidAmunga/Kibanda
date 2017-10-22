@@ -129,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     private void initViews() {
         btnSignIn=(Button)findViewById(R.id.btnSignIn);

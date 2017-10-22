@@ -20,6 +20,8 @@ import com.labs.tatu.kibanda.R;
 import com.labs.tatu.kibanda.common.Common;
 import com.labs.tatu.kibanda.model.Request;
 
+import java.util.Random;
+
 public class ListenOrder extends Service implements ChildEventListener {
 
     DatabaseReference mDatabase;
@@ -48,14 +50,46 @@ public class ListenOrder extends Service implements ChildEventListener {
 
     @Override
     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        if (Common.currentUser.getName().equals("admin")) {
+            //Trigger Here
+            Request request = dataSnapshot.getValue(Request.class);
+            if (request.getStatus().equals("0")) {
+                showOrderNotification(dataSnapshot.getKey(), request);
+            }
+        }
 
+    }
+
+    private void showOrderNotification(String key, Request request) {
+        Intent intent = new Intent(getBaseContext(), OrderStatus.class);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(getBaseContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext());
+
+        builder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setTicker("Kibanda Admin")
+                .setContentInfo("New Order")
+                .setContentIntent(contentIntent)
+                .setContentText("You have a new order #" + key)
+                .setSmallIcon(R.mipmap.ic_launcher);
+        int randomInt = new Random().nextInt(9999 - 1) + 1;
+
+        NotificationManager notificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(randomInt, builder.build());
     }
 
     @Override
     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-        //Trigger Here
-        Request request = dataSnapshot.getValue(Request.class);
-        showNotification(dataSnapshot.getKey(), request);
+        if (!Common.currentUser.getName().equals("admin")) {
+            //Trigger Here
+            Request request = dataSnapshot.getValue(Request.class);
+            showNotification(dataSnapshot.getKey(), request);
+        }
+
     }
 
     private void showNotification(String key, Request request) {
