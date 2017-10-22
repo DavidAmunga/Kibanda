@@ -84,6 +84,7 @@ public class FoodListAdmin extends AppCompatActivity {
 
         //        Set up Firebase
         mDatabase = FirebaseDatabase.getInstance().getReference("Foods");
+        mDatabase.keepSynced(true);
         mStorage = FirebaseStorage.getInstance().getReference();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_food_admin);

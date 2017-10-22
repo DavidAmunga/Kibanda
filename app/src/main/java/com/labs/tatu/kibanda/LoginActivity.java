@@ -17,6 +17,9 @@ import com.labs.tatu.kibanda.admin.HomeAdmin;
 import com.labs.tatu.kibanda.common.Common;
 import com.labs.tatu.kibanda.model.User;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.rey.material.widget.CheckBox;
+
+import io.paperdb.Paper;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     Button signIn;
 
     DatabaseReference mDatabase;
+    CheckBox ckbRemember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,53 +42,64 @@ public class LoginActivity extends AppCompatActivity {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog mDialog = new ProgressDialog(LoginActivity.this);
-                mDialog.setMessage("Please wait....");
-                mDialog.setCancelable(false);
-                mDialog.show();
+                if (Common.isConnectedToInternet(getBaseContext())) {
 
-                mDatabase.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Check If user does not exist in Database
-                        if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
+//                    Save user and password
+                    if (ckbRemember.isChecked()) {
+                        Paper.book().write(Common.USER_KEY, edtPhone.getText().toString());
+                        Paper.book().write(Common.PWD_KEY, edtPassword.getText().toString());
+                    }
+                    final ProgressDialog mDialog = new ProgressDialog(LoginActivity.this);
+                    mDialog.setMessage("Please wait....");
+                    mDialog.setCancelable(false);
+                    mDialog.show();
+
+                    mDatabase.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //Check If user does not exist in Database
+                            if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
 
 
-                            //Get User Information
-                            mDialog.dismiss();
-                            User user = dataSnapshot.child(edtPhone.getText().toString()).getValue(User.class);
-                            user.setPhone(edtPhone.getText().toString());
-                            if (user.getPassword().equals(edtPassword.getText().toString())) {
-                                if (user.getName().equals("admin")) {
-                                    Intent homeIntent = new Intent(LoginActivity.this, HomeAdmin.class);
+                                //Get User Information
+                                mDialog.dismiss();
+                                User user = dataSnapshot.child(edtPhone.getText().toString()).getValue(User.class);
+                                user.setPhone(edtPhone.getText().toString());
+                                if (user.getPassword().equals(edtPassword.getText().toString())) {
+                                    if (user.getName().equals("admin")) {
+                                        Intent homeIntent = new Intent(LoginActivity.this, HomeAdmin.class);
 //                                Create Variable to save current user
-                                    Common.currentUser = user;
-                                    startActivity(homeIntent);
-                                    finish();
+                                        Common.currentUser = user;
+                                        startActivity(homeIntent);
+                                        finish();
+                                    } else {
+                                        Intent homeIntent = new Intent(LoginActivity.this, Home.class);
+//                                Create Variable to save current user
+                                        Common.currentUser = user;
+                                        startActivity(homeIntent);
+                                        finish();
+                                    }
+
+
                                 } else {
-                                    Intent homeIntent = new Intent(LoginActivity.this, Home.class);
-//                                Create Variable to save current user
-                                    Common.currentUser = user;
-                                    startActivity(homeIntent);
-                                    finish();
+                                    Toast.makeText(LoginActivity.this, "Wrong Password!", Toast.LENGTH_SHORT).show();
                                 }
-
-
                             } else {
-                                Toast.makeText(LoginActivity.this, "Wrong Password!", Toast.LENGTH_SHORT).show();
+                                mDialog.dismiss();
+                                Toast.makeText(LoginActivity.this, "User does not exist", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            mDialog.dismiss();
-                            Toast.makeText(LoginActivity.this, "User does not exist", Toast.LENGTH_SHORT).show();
+
                         }
 
-                    }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                        }
+                    });
+                } else {
+                    Toast.makeText(LoginActivity.this, "Please check your connection !!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
 
@@ -94,5 +109,6 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword = (MaterialEditText) findViewById(R.id.edtPassword);
         edtPhone = (MaterialEditText) findViewById(R.id.edtPhone);
         signIn=(Button)findViewById(R.id.btnSignIn);
+        ckbRemember = (CheckBox) findViewById(R.id.ckbRemember);
     }
 }

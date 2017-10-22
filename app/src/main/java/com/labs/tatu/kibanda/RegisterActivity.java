@@ -12,6 +12,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labs.tatu.kibanda.common.Common;
 import com.labs.tatu.kibanda.model.User;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -35,31 +36,36 @@ public class RegisterActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog mDialog = new ProgressDialog(RegisterActivity.this);
-                mDialog.setMessage("Please waiting....");
-                mDialog.show();
+                if (Common.isConnectedToInternet(getBaseContext())) {
+                    final ProgressDialog mDialog = new ProgressDialog(RegisterActivity.this);
+                    mDialog.setMessage("Please waiting....");
+                    mDialog.show();
 
-                mDatabase.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //Check if already user Phone
-                        if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
-                            mDialog.dismiss();
-                            Toast.makeText(RegisterActivity.this, "Phone number already registered", Toast.LENGTH_SHORT).show();
-                        } else {
-                            mDialog.dismiss();
-                            User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
-                            mDatabase.child(edtPhone.getText().toString()).setValue(user);
-                            Toast.makeText(RegisterActivity.this, "Sign up succesful!", Toast.LENGTH_SHORT).show();
-                            finish();
+                    mDatabase.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //Check if already user Phone
+                            if (dataSnapshot.child(edtPhone.getText().toString()).exists()) {
+                                mDialog.dismiss();
+                                Toast.makeText(RegisterActivity.this, "Phone number already registered", Toast.LENGTH_SHORT).show();
+                            } else {
+                                mDialog.dismiss();
+                                User user = new User(edtName.getText().toString(), edtPassword.getText().toString());
+                                mDatabase.child(edtPhone.getText().toString()).setValue(user);
+                                Toast.makeText(RegisterActivity.this, "Sign up succesful!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Please check your connection !!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
 
