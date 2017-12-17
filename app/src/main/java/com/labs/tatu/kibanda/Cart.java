@@ -9,12 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codemybrainsout.placesearch.PlaceSearchDialog;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.labs.tatu.kibanda.ViewHolder.CartAdapter;
@@ -22,6 +22,7 @@ import com.labs.tatu.kibanda.common.Common;
 import com.labs.tatu.kibanda.database.Database;
 import com.labs.tatu.kibanda.model.Order;
 import com.labs.tatu.kibanda.model.Request;
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -40,12 +41,11 @@ public class Cart extends AppCompatActivity {
 
     TextView txtTotalPrice;
 
-    FButton btnPlace;
+    Button btnPlace;
 
-    List<Order> cart=new ArrayList<>();
+    List<Order> cart = new ArrayList<>();
 
     CartAdapter adapter;
-
 
 
     @Override
@@ -55,27 +55,24 @@ public class Cart extends AppCompatActivity {
 
 
 //        Firebase
-        mDatabase= FirebaseDatabase.getInstance().getReference("Requests");
+        mDatabase = FirebaseDatabase.getInstance().getReference("Requests");
 
 //        Init
-        recyclerView=(RecyclerView)findViewById(R.id.listCart);
+        recyclerView = (RecyclerView) findViewById(R.id.listCart);
         recyclerView.setHasFixedSize(true);
-        layoutManager=new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        txtTotalPrice=(TextView)findViewById(R.id.total);
-        btnPlace=(FButton)findViewById(R.id.btnPlaceOrder);
+        txtTotalPrice = (TextView) findViewById(R.id.total);
+        btnPlace = (Button) findViewById(R.id.btnPlaceOrder);
 
         btnPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(cart.size()>0)
-                {
+                if (cart.size() > 0) {
                     showAlertDialog();
-                }
-                else
-                {
+                } else {
                     Toast.makeText(Cart.this, "Your cart is empty!", Toast.LENGTH_SHORT).show();
                 }
 
@@ -91,25 +88,30 @@ public class Cart extends AppCompatActivity {
     }
 
     private void showAlertDialog() {
-        PlaceSearchDialog placeSearchDialog = new PlaceSearchDialog.Builder(Cart.this)
-                .setHintText("Enter your address")
-                //.setHintTextColor(R.color.light_gray)
-                .setNegativeText("CANCEL")
-                // .setNegativeTextColor(R.color.gray)
-                .setPositiveText("ORDER")
-                //.setPositiveTextColor(R.color.red)
-                .setLocationNameListener(new PlaceSearchDialog.LocationNameListener() {
+
+        new LovelyTextInputDialog(this, R.style.AppTheme)
+                .setTopColorRes(R.color.colorPrimary)
+                .setTitle("Delivery location")
+                .setMessage("Enter location")
+                .setIcon(R.drawable.ic_order_location)
+                .setInputFilter("Delivery location can not be empty", new LovelyTextInputDialog.TextFilter() {
                     @Override
-                    public void locationName(String locationName) {
+                    public boolean check(String text) {
+                        return text.length() > 0;
+                    }
+                })
+                .setConfirmButton(android.R.string.ok, new LovelyTextInputDialog.OnTextInputConfirmListener() {
+                    @Override
+                    public void onTextInputConfirmed(String location) {
                         //Create New Request
-                        Request request=new Request(
+                        Request request = new Request(
                                 Common.currentUser.getPhone(),
                                 Common.currentUser.getName(),
-                                locationName,
+                                location,
                                 txtTotalPrice.getText().toString(),
                                 cart);
                         //            Submit to Firebase Use System.currentMillis
-                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Requests");
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Requests");
                         ref.child(String.valueOf(System.currentTimeMillis())).setValue(request);
 //                Delete Cart
                         new Database(getBaseContext()).cleanCart();
@@ -118,24 +120,25 @@ public class Cart extends AppCompatActivity {
                         finish();
                     }
                 })
-                .build();
-        placeSearchDialog.show();
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+
 
     }
+
     private void loadListFood() {
-        cart=new Database(this).getCarts();
-        adapter=new CartAdapter(cart,this);
+        cart = new Database(this).getCarts();
+        adapter = new CartAdapter(cart, this);
 
         recyclerView.setAdapter(adapter);
         //Calculate total price
 
 
-        int total=0;
-        for(Order order:cart)
-        {
-            Log.d(TAG, "Order Name :"+order.getProductName());
+        int total = 0;
+        for (Order order : cart) {
+            Log.d(TAG, "Order Name :" + order.getProductName());
 
-            total+=(Integer.parseInt(order.getPrice()))*(Integer.parseInt(order.getQuantity()));
+            total += (Integer.parseInt(order.getPrice())) * (Integer.parseInt(order.getQuantity()));
 
 
             txtTotalPrice.setText(String.valueOf(total));
@@ -144,7 +147,7 @@ public class Cart extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getTitle().equals("Delete")) {
+        if (item.getTitle().equals("Delete")) {
             deleteCart(item.getOrder());
         }
         return true;
@@ -156,8 +159,7 @@ public class Cart extends AppCompatActivity {
         //After that, we will delete all old data from SQLite
         new Database(this).cleanCart();
         //Update data from List<Order> to SQLite
-        for(Order item:cart)
-        {
+        for (Order item : cart) {
             new Database(this).addToCart(item);
         }
         loadListFood();

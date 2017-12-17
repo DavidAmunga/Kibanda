@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,7 +75,7 @@ public class HomeAdmin extends AppCompatActivity
     Category newCategory;
     //    Add MENU layout
     MaterialEditText edtName;
-    FButton btnUpload, btnSelect;
+    Button btnUpload, btnSelect;
     Uri saveUri;
     FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter;
 
@@ -145,8 +146,8 @@ public class HomeAdmin extends AppCompatActivity
         View add_menu_layout = inflater.inflate(R.layout.add_new_menu_layout, null);
 
         edtName = (MaterialEditText) add_menu_layout.findViewById(R.id.edtName);
-        btnSelect = (FButton) add_menu_layout.findViewById(R.id.btnSelect);
-        btnUpload = (FButton) add_menu_layout.findViewById(R.id.btnUpload);
+        btnSelect = (Button) add_menu_layout.findViewById(R.id.btnSelect);
+        btnUpload = (Button) add_menu_layout.findViewById(R.id.btnUpload);
 
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -375,8 +376,8 @@ public class HomeAdmin extends AppCompatActivity
         View add_menu_layout = inflater.inflate(R.layout.add_new_menu_layout, null);
 
         edtName = (MaterialEditText) add_menu_layout.findViewById(R.id.edtName);
-        btnSelect = (FButton) add_menu_layout.findViewById(R.id.btnSelect);
-        btnUpload = (FButton) add_menu_layout.findViewById(R.id.btnUpload);
+        btnSelect = (Button) add_menu_layout.findViewById(R.id.btnSelect);
+        btnUpload = (Button) add_menu_layout.findViewById(R.id.btnUpload);
 
         //Set Default Name
         edtName.setText(item.getName());

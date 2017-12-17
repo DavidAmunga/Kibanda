@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.labs.tatu.kibanda.Cart"
-    android:padding="16dp"
     android:background="@drawable/bg"
+    android:padding="16dp"
+    tools:context="com.labs.tatu.kibanda.Cart"
     >
 
     <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:background="@android:color/transparent"
         android:id="@+id/listCart"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         />
 
     
     <android.support.v7.widget.CardView
+        android:id="@+id/layout1"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:id="@+id/layout1"
         android:layout_alignParentBottom="true"
         app:cardBackgroundColor="@color/colorPrimary"
         >
@@ -28,11 +28,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
                     />
             </LinearLayout>
 
-            <info.hoang8f.widget.FButton
+            <Button
                 android:id="@+id/btnPlaceOrder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,13 +61,9 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
+                android:background="@color/btnSignActive"
                 android:text="Place Order"
-                android:textColor="#fff"
-                app:buttonColor="@color/btnSignActive"
-                app:cornerRadius="4dp"
-                app:shadowColor="#000"
-                app:shadowEnabled="true"
-                app:shadowHeight="5dp" />
+                android:textColor="#fff" />
 
         </RelativeLayout>
 

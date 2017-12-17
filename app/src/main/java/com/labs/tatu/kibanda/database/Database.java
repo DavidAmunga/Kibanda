@@ -66,7 +66,8 @@ public class Database extends SQLiteAssetHelper {
         String query=String.format("DELETE FROM OrderDetail");
         db.execSQL(query);
     }
-//    Favorites
+
+    //    Favorites
     public void addToFavorites(String foodId)
     {
         SQLiteDatabase db=getReadableDatabase();

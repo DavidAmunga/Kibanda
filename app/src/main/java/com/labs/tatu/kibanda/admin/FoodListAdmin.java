@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -49,8 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import info.hoang8f.widget.FButton;
-
 public class FoodListAdmin extends AppCompatActivity {
     private static final String TAG = "FoodListAdmin";
     private final int PICK_IMAGE_REQUEST = 71;
@@ -67,7 +66,7 @@ public class FoodListAdmin extends AppCompatActivity {
     FirebaseRecyclerAdapter<Food, FoodViewHolder> adapter;
 
     MaterialEditText edtFoodName, edtDiscount, edtPrice, edtDescription;
-    FButton btnSelect, btnUpload;
+    Button btnSelect, btnUpload;
 
     Food newFood;
 
@@ -179,8 +178,8 @@ public class FoodListAdmin extends AppCompatActivity {
         edtDiscount = (MaterialEditText) add_menu_layout.findViewById(R.id.edtDiscount);
         edtPrice = (MaterialEditText) add_menu_layout.findViewById(R.id.edtPrice);
         edtDescription = (MaterialEditText) add_menu_layout.findViewById(R.id.edtDescription);
-        btnSelect = (FButton) add_menu_layout.findViewById(R.id.btnSelect);
-        btnUpload = (FButton) add_menu_layout.findViewById(R.id.btnUpload);
+        btnSelect = (Button) add_menu_layout.findViewById(R.id.btnSelect);
+        btnUpload = (Button) add_menu_layout.findViewById(R.id.btnUpload);
 
 
         btnUpload.setOnClickListener(new View.OnClickListener() {
@@ -365,8 +364,8 @@ public class FoodListAdmin extends AppCompatActivity {
         edtDiscount = (MaterialEditText) add_menu_layout.findViewById(R.id.edtDiscount);
         edtPrice = (MaterialEditText) add_menu_layout.findViewById(R.id.edtPrice);
         edtDescription = (MaterialEditText) add_menu_layout.findViewById(R.id.edtDescription);
-        btnSelect = (FButton) add_menu_layout.findViewById(R.id.btnSelect);
-        btnUpload = (FButton) add_menu_layout.findViewById(R.id.btnUpload);
+        btnSelect = (Button) add_menu_layout.findViewById(R.id.btnSelect);
+        btnUpload = (Button) add_menu_layout.findViewById(R.id.btnUpload);
 
 
         edtFoodName.setText(item.getName());
